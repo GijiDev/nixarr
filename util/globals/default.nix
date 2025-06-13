@@ -5,13 +5,15 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   globals = config.util-nixarr.globals;
-in {
+in
+{
   options.util-nixarr.globals = mkOption {
     type = types.attrs;
     description = "Global values to be used by Nixarr, change at your own risk.";
-    default = {};
+    default = { };
   };
 
   config.util-nixarr.globals = {
@@ -29,6 +31,7 @@ in {
       jellyseerr = 262;
       sonarr = 274;
       radarr = 275;
+      whisparr = 276;
       readarr = 250;
       readarr-audiobook = 211;
       recyclarr = 269;
@@ -79,6 +82,10 @@ in {
     };
     radarr = {
       user = "radarr";
+      group = globals.libraryOwner.group;
+    };
+    whisparr = {
+      user = "whisparr";
       group = globals.libraryOwner.group;
     };
     readarr = {

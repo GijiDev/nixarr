@@ -4,10 +4,12 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.nixarr;
   globals = config.util-nixarr.globals;
-in {
+in
+{
   imports = [
     ./audiobookshelf
     ./autobrr
@@ -27,6 +29,7 @@ in {
     ./sabnzbd
     ./sonarr
     ./transmission
+    ./whisparr
     ../util
   ];
 
@@ -78,8 +81,8 @@ in {
 
     mediaUsers = mkOption {
       type = with types; listOf str;
-      default = [];
-      example = ["user"];
+      default = [ ];
+      example = [ "user" ];
       description = ''
         Extra users to add to the media group.
       '';
@@ -143,7 +146,7 @@ in {
 
       accessibleFrom = mkOption {
         type = with types; listOf port;
-        default = [];
+        default = [ ];
         description = ''
           What IP's the VPN submodule should be accessible from. By default
           the following are included:
@@ -156,7 +159,7 @@ in {
           network. You might have to use this option to extend your list
           with your local IP range by passing it with this option.
         '';
-        example = ["192.168.2.0/24"];
+        example = [ "192.168.2.0/24" ];
       };
 
       vpnTestService = {
@@ -178,24 +181,30 @@ in {
 
       openTcpPorts = mkOption {
         type = with types; listOf port;
-        default = [];
+        default = [ ];
         description = ''
           What TCP ports to allow traffic from. You might need this if you're
           port forwarding on your VPN provider and you're setting up services
           not covered in by this module that uses the VPN.
         '';
-        example = [46382 38473];
+        example = [
+          46382
+          38473
+        ];
       };
 
       openUdpPorts = mkOption {
         type = with types; listOf port;
-        default = [];
+        default = [ ];
         description = ''
           What UDP ports to allow traffic from. You might need this if you're
           port forwarding on your VPN provider and you're setting up services
           not covered in by this module that uses the VPN.
         '';
-        example = [46382 38473];
+        example = [
+          46382
+          38473
+        ];
       };
     };
   };
@@ -227,13 +236,11 @@ in {
         port = cfg.vpn.vpnTestService.port;
         protocol = "tcp";
       };
-      accessibleFrom =
-        [
-          "192.168.1.0/24"
-          "192.168.0.0/24"
-          "127.0.0.1"
-        ]
-        ++ cfg.vpn.accessibleFrom;
+      accessibleFrom = [
+        "192.168.1.0/24"
+        "192.168.0.0/24"
+        "127.0.0.1"
+      ] ++ cfg.vpn.accessibleFrom;
       wireguardConfigFile = cfg.vpn.wgConf;
     };
 
@@ -245,47 +252,60 @@ in {
         vpnNamespace = "wg";
       };
 
-      script = let
-        vpn-test = pkgs.writeShellApplication {
-          name = "vpn-test";
+      script =
+        let
+          vpn-test = pkgs.writeShellApplication {
+            name = "vpn-test";
 
-          runtimeInputs = with pkgs; [util-linux unixtools.ping coreutils curl bash libressl netcat-gnu openresolv dig];
+            runtimeInputs = with pkgs; [
+              util-linux
+              unixtools.ping
+              coreutils
+              curl
+              bash
+              libressl
+              netcat-gnu
+              openresolv
+              dig
+            ];
 
-          text =
-            ''
-              cd "$(mktemp -d)"
-
-              # DNS information
-              dig google.com
-
-              # Print resolv.conf
-              echo "/etc/resolv.conf contains:"
-              cat /etc/resolv.conf
-
-              # Query resolvconf
-              echo "resolvconf output:"
-              resolvconf -l
-              echo ""
-
-              # Get ip
-              echo "Getting IP:"
-              curl -s ipinfo.io
-
-              echo -ne "DNS leak test:"
-              curl -s https://raw.githubusercontent.com/macvk/dnsleaktest/b03ab54d574adbe322ca48cbcb0523be720ad38d/dnsleaktest.sh -o dnsleaktest.sh
-              chmod +x dnsleaktest.sh
-              ./dnsleaktest.sh
-            ''
-            + (
-              if cfg.vpn.vpnTestService.port != null
-              then ''
-                echo "starting netcat on port ${builtins.toString cfg.vpn.vpnTestService.port}:"
-                nc -vnlp ${builtins.toString cfg.vpn.vpnTestService.port}
+            text =
               ''
-              else ""
-            );
-        };
-      in "${vpn-test}/bin/vpn-test";
+                cd "$(mktemp -d)"
+
+                # DNS information
+                dig google.com
+
+                # Print resolv.conf
+                echo "/etc/resolv.conf contains:"
+                cat /etc/resolv.conf
+
+                # Query resolvconf
+                echo "resolvconf output:"
+                resolvconf -l
+                echo ""
+
+                # Get ip
+                echo "Getting IP:"
+                curl -s ipinfo.io
+
+                echo -ne "DNS leak test:"
+                curl -s https://raw.githubusercontent.com/macvk/dnsleaktest/b03ab54d574adbe322ca48cbcb0523be720ad38d/dnsleaktest.sh -o dnsleaktest.sh
+                chmod +x dnsleaktest.sh
+                ./dnsleaktest.sh
+              ''
+              + (
+                if cfg.vpn.vpnTestService.port != null then
+                  ''
+                    echo "starting netcat on port ${builtins.toString cfg.vpn.vpnTestService.port}:"
+                    nc -vnlp ${builtins.toString cfg.vpn.vpnTestService.port}
+                  ''
+                else
+                  ""
+              );
+          };
+        in
+        "${vpn-test}/bin/vpn-test";
     };
   };
 }
