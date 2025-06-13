@@ -17,6 +17,7 @@ in
     ./ddns
     ./jellyfin
     ./jellyseerr
+    ./komga
     ./lidarr
     ./nixarr-command
     ./openssh

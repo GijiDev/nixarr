@@ -29,6 +29,7 @@ in
       lidarr = 306;
       prowlarr = 293;
       jellyseerr = 262;
+      komga = 147;
       sonarr = 274;
       radarr = 275;
       whisparr = 276;
@@ -67,6 +68,10 @@ in
     jellyseerr = {
       user = "jellyseerr";
       group = "jellyseerr";
+    };
+    komga = {
+      user = "komga";
+      group = globals.libraryOwner.group;
     };
     lidarr = {
       user = "lidarr";
