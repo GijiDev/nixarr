@@ -29,6 +29,14 @@ with lib; let
         chown ${config.services.recyclarr.user}:${config.services.recyclarr.group} "$API_KEY_FILE"
         echo "RADARR_API_KEY=$(tr -d '\n' < "$API_KEY_FILE")" >> "${cfg.stateDir}/env"
       ''}
+      ${optionalString nixarr.radarr-anime.enable ''
+        # Extract Radarr Anime API key
+        API_KEY_FILE="${cfg.stateDir}/radarr-anime-api-key"
+        xq -r '.Config.ApiKey' "${nixarr.radarr-anime.stateDir}/config.xml" > "$API_KEY_FILE"
+        chmod 400 "$API_KEY_FILE"
+        chown ${config.services.recyclarr.user}:${config.services.recyclarr.group} "$API_KEY_FILE"
+        echo "RADARR_ANIME_API_KEY=$(tr -d '\n' < "$API_KEY_FILE")" >> "${cfg.stateDir}/env"
+      ''}
 
       ${optionalString nixarr.sonarr.enable ''
         # Extract Sonarr API key
@@ -37,6 +45,14 @@ with lib; let
         chmod 400 "$API_KEY_FILE"
         chown ${config.services.recyclarr.user}:${config.services.recyclarr.group} "$API_KEY_FILE"
         echo "SONARR_API_KEY=$(tr -d '\n' < "$API_KEY_FILE")" >> "${cfg.stateDir}/env"
+      ''}
+      ${optionalString nixarr.sonarr-anime.enable ''
+        # Extract Sonarr Anime API key
+        API_KEY_FILE="${cfg.stateDir}/sonarr-anime-api-key"
+        xq -r '.Config.ApiKey' "${nixarr.sonarr-anime.stateDir}/config.xml" > "$API_KEY_FILE"
+        chmod 400 "$API_KEY_FILE"
+        chown ${config.services.recyclarr.user}:${config.services.recyclarr.group} "$API_KEY_FILE"
+        echo "SONARR_ANIME_API_KEY=$(tr -d '\n' < "$API_KEY_FILE")" >> "${cfg.stateDir}/env"
       ''}
 
       chmod 400 "${cfg.stateDir}/env"

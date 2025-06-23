@@ -22,11 +22,13 @@ in {
     ./plex
     ./prowlarr
     ./radarr
+    ./radarr-anime
     ./readarr
     ./readarr-audiobook
     ./recyclarr
     ./sabnzbd
     ./sonarr
+    ./sonarr-anime
     ./transmission
     ./whisparr
     ../util
@@ -186,7 +188,10 @@ in {
           port forwarding on your VPN provider and you're setting up services
           not covered in by this module that uses the VPN.
         '';
-        example = [46382 38473];
+        example = [
+          46382
+          38473
+        ];
       };
 
       openUdpPorts = mkOption {
@@ -197,7 +202,10 @@ in {
           port forwarding on your VPN provider and you're setting up services
           not covered in by this module that uses the VPN.
         '';
-        example = [46382 38473];
+        example = [
+          46382
+          38473
+        ];
       };
     };
   };
@@ -251,7 +259,17 @@ in {
         vpn-test = pkgs.writeShellApplication {
           name = "vpn-test";
 
-          runtimeInputs = with pkgs; [util-linux unixtools.ping coreutils curl bash libressl netcat-gnu openresolv dig];
+          runtimeInputs = with pkgs; [
+            util-linux
+            unixtools.ping
+            coreutils
+            curl
+            bash
+            libressl
+            netcat-gnu
+            openresolv
+            dig
+          ];
 
           text =
             ''
