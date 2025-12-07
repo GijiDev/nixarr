@@ -211,7 +211,9 @@ in {
         uid = globals.uids.${globals.recyclarr.user};
         extraGroups =
           (optional nixarr.radarr.enable "radarr-api")
-          ++ (optional nixarr.sonarr.enable "sonarr-api");
+          ++ (optional nixarr.radarr-anime.enable "radarr-anime-api")
+          ++ (optional nixarr.sonarr.enable "sonarr-api")
+          ++ (optional nixarr.sonarr-anime.enable "sonarr-anime-api");
       };
     };
 
@@ -227,10 +229,14 @@ in {
       before = ["recyclarr.service"];
       requires =
         (optionals nixarr.radarr.enable ["radarr.service" "radarr-api-key.service"])
-        ++ (optionals nixarr.sonarr.enable ["sonarr.service" "sonarr-api-key.service"]);
+        ++ (optionals nixarr.radarr-anime.enable ["radarr-anime.service" "radarr-anime-api-key.service"])
+        ++ (optionals nixarr.sonarr.enable ["sonarr.service" "sonarr-api-key.service"])
+        ++ (optionals nixarr.sonarr-anime.enable ["sonarr-anime.service" "sonarr-anime-api-key.service"]);
       after =
         (optionals nixarr.radarr.enable ["radarr.service" "radarr-api-key.service"])
-        ++ (optionals nixarr.sonarr.enable ["sonarr.service" "sonarr-api-key.service"]);
+        ++ (optionals nixarr.radarr-anime.enable ["radarr-anime.service" "radarr-anime-api-key.service"])
+        ++ (optionals nixarr.sonarr.enable ["sonarr.service" "sonarr-api-key.service"])
+        ++ (optionals nixarr.sonarr-anime.enable ["sonarr-anime.service" "sonarr-anime-api-key.service"]);
 
       serviceConfig = {
         Type = "oneshot";
@@ -244,9 +250,17 @@ in {
             printf RADARR_API_KEY= >> '${cfg.stateDir}/env'
             cat '${nixarr.stateDir}/api-keys/radarr.key' >> '${cfg.stateDir}/env'
           ''}
+          ${optionalString nixarr.radarr-anime.enable ''
+            printf RADARR_ANIME_API_KEY= >> '${cfg.stateDir}/env'
+            cat '${nixarr.stateDir}/api-keys/radarr-anime.key' >> '${cfg.stateDir}/env'
+          ''}
           ${optionalString nixarr.sonarr.enable ''
             printf SONARR_API_KEY= >> '${cfg.stateDir}/env'
             cat '${nixarr.stateDir}/api-keys/sonarr.key' >> '${cfg.stateDir}/env'
+          ''}
+          ${optionalString nixarr.sonarr-anime.enable ''
+            printf SONARR_ANIME_API_KEY= >> '${cfg.stateDir}/env'
+            cat '${nixarr.stateDir}/api-keys/sonarr-anime.key' >> '${cfg.stateDir}/env'
           ''}
         '';
       };

@@ -15,7 +15,7 @@ in {
     default = {};
   };
 
-  config.util-nixarr.globals = {
+  config.util-nixarr.globals = rec {
     libraryOwner.user = "root";
     libraryOwner.group = "media";
 
@@ -30,7 +30,9 @@ in {
       jellyseerr = 262;
       komga = 145;
       sonarr = 274;
+      sonarr-anime = sonarr;
       radarr = 275;
+      radarr-anime = radarr;
       readarr = 250;
       readarr-audiobook = 211;
       recyclarr = 269;
@@ -92,6 +94,7 @@ in {
       user = "radarr";
       group = globals.libraryOwner.group;
     };
+    radarr-anime = radarr;
     readarr = {
       user = "readarr";
       group = globals.libraryOwner.group;
@@ -112,6 +115,7 @@ in {
       user = "sonarr";
       group = globals.libraryOwner.group;
     };
+    sonarr-anime = sonarr;
     transmission = {
       user = "transmission";
       group = globals.libraryOwner.group;

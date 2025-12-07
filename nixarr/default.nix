@@ -23,11 +23,13 @@ in {
     ./plex
     ./prowlarr
     ./radarr
+    ./radarr-anime
     ./readarr
     ./readarr-audiobook
     ./recyclarr
     ./sabnzbd
     ./sonarr
+    ./sonarr-anime
     ./transmission
     ./whisparr
     ../util

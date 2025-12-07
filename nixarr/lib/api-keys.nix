@@ -13,10 +13,12 @@ with lib; let
     lidarr = "${cfg.lidarr.stateDir}/config.xml";
     prowlarr = "${cfg.prowlarr.stateDir}/config.xml";
     radarr = "${cfg.radarr.stateDir}/config.xml";
+    radarr-anime = "${cfg.radarr-anime.stateDir}/config.xml";
     readarr-audiobook = "${cfg.readarr-audiobook.stateDir}/config.xml";
     readarr = "${cfg.readarr.stateDir}/config.xml";
     sabnzbd = "${cfg.sabnzbd.stateDir}/sabnzbd.ini";
     sonarr = "${cfg.sonarr.stateDir}/config.xml";
+    sonarr-anime = "${cfg.sonarr-anime.stateDir}/config.xml";
     transmission = "${cfg.transmission.stateDir}/.config/transmission-daemon/settings.json";
   };
 
@@ -41,6 +43,9 @@ with lib; let
     radarr = pkgs.writeShellScript "print-radarr-api-key" ''
       ${xq} -r .Config.ApiKey '${serviceCfgFile.radarr}'
     '';
+    radarr-anime = pkgs.writeShellScript "print-radarr-anime-api-key" ''
+      ${xq} -r .Config.ApiKey '${serviceCfgFile.radarr-anime}'
+    '';
     readarr-audiobook = pkgs.writeShellScript "print-readarr-audiobook-api-key" ''
       ${xq} -r .Config.ApiKey '${serviceCfgFile.readarr-audiobook}'
     '';
@@ -52,6 +57,9 @@ with lib; let
     '';
     sonarr = pkgs.writeShellScript "print-sonarr-api-key" ''
       ${xq} -r .Config.ApiKey '${serviceCfgFile.sonarr}'
+    '';
+    sonarr-anime = pkgs.writeShellScript "print-sonarr-anime-api-key" ''
+      ${xq} -r .Config.ApiKey '${serviceCfgFile.sonarr-anime}'
     '';
     transmission = pkgs.writeShellScript "print-transmission-api-key" ''
       ${yq} -r .["rpc-password"] '${serviceCfgFile.transmission}'
